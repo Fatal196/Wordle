@@ -1,5 +1,7 @@
 # Wordle Game in Python
 
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white)
+
 A simple Wordle clone where the player must guess a five-letter word within six attempts.
 
 Each time the player guesses a letter:
@@ -19,8 +21,14 @@ Clone the repository:
 git clone https://github.com/Fatal196/Wordle.git
 cd Wordle
 
-## Install required depencies:
+```
+Install required Dependencies:
+```bash
 pip install -r requirements.txt
-
-## Run the game
+```
+Run the game:
+```bash
 python wordle.py
+```
+## Author:
+Janick "Fatal196" Müller
