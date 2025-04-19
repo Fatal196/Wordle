@@ -1,123 +1,119 @@
+"""
+Program Name: Wordle
+Version: 1.0
+Author: Janick Müller
+Description: A Wordle game that can be played in the terminal
+"""
+
 import random
-import colorama # Für eine fabrliche print-Ausgabe notwendig: pip install colorama
+import colorama  # Required for colored terminal output: pip install colorama
 
-
-# Abgabe Kurs: Einführung ins Programmieren mit Python
-# Aufgabenstellung: Python Implementierung des Spiels Wordle
+# Course submission: Introduction to Programming with Python
+# Task: Python implementation of the Wordle game
 
 def worte_schreiben():
-    """Liest eine existierende Wörterliste ein und extrahiert alle Wörter, welche genau 5 Buchstaben lang sind und schreibt diese
-    in eine neue Datei namens Worte5.txt"""
+    """Reads an existing word list and extracts all words that are exactly 5 letters long,
+    writing them into a new file called Worte5.txt."""
     with open('Worte.txt', 'r') as datei_worte, open('Worte5.txt', 'w', encoding='utf-8') as datei_worte5:
         for zeile in datei_worte:
-            #print(zeile.strip())
             zeile = zeile.strip().upper()
             if len(zeile) == 5:
-                    datei_worte5.write(zeile + '\n')
+                datei_worte5.write(zeile + '\n')
 
 def worte_einlesen():
-    """Liest eine Wortliste ein. Die Liste setzt voraus, dass jedes Wort auf einer separaten Zeile stehen muss. 
-    Die Funktion gibt die Worte der Liste als Tuple zurück."""
+    """Reads a word list where each word must be on a separate line.
+    Returns the words as a tuple."""
     with open('Worte5.txt', 'r', encoding='utf-8') as Worte5:
         return tuple(Worte5.readlines())
 
 def wort_wordle(wortliste):
-    """Die Funktion wählt ein zufälliges Wort aus der "wortliste" aus und gibt dieses zurück."""
+    """Randomly selects a word from the given 'wortliste' and returns it."""
     max_rand = len(wortliste)
     return wortliste[random.randint(0, max_rand - 1)]
 
 def wordle_spielen(wordle_wort):
-    """Funktion führt die Logik für das Spiel Wordle aus und gibt Antwort zurück"""
+    """Executes the game logic for Wordle and provides feedback to the player."""
     index = 0
 
     while index <= 5:
-        spieler_wort = str(input(f'{index + 1}. Versuch: ')).upper()
+        spieler_wort = str(input(f'{index + 1}. Attempt: ')).upper()
         index_update = spieler_pruefen(spieler_wort)
 
-        # Prüfen, ob Spieler das Wort erraten hat
+        # Check if the player has guessed the correct word
         if spieler_wort == wordle_wort[0:5]:
-            print('Du hast das Wort erraten. Herzlichen Glückwunsch!')
+            print('You guessed the word. Congratulations!')
             break
 
         if index_update == 1:
-            # Wordle Wort prüfen und Rückmeldung an Spieler
+            # Check the word and provide feedback to the player
             ergebnis = ergebnis_wordle(wordle_wort, spieler_wort)
             print(ergebnis)
         else:
-            print('Wort erneut eingeben.')
+            print('Please enter the word again.')
 
         index = index + index_update
 
     if index > 5:
-        print(f'Das Wort wurde nicht erraten. \nDie Lösung lautet: {wordle_wort}')
+        print(f'The word was not guessed. \nThe solution is: {wordle_wort}')
 
 def spieler_pruefen(spieler_wort):
-    """Überprüft das durch den Spieler eingegeben Wort auf Korrektheit: 
-    1. Nur Buchstaben erlaubt
-    2. Eingabe muss genau 5 Zeichen lang sein"""
-    # Ist die Spieleriengabe nicht korrekt, wird dies die Funktion zurückgeben und den Spieler in der FUnktion 
-    # wordle_spielen erneut um eine Eingabe bitten, ohne die letzte Eingabe zu werten. 
-
+    """Checks the player's input:
+    1. Only letters are allowed
+    2. The input must be exactly 5 characters long
+    Returns an index increment value indicating if the input is valid."""
+    
     index_incr = -1
 
-    # Prüfen, ob die Länge des Wortes ok ist
+    # Check if the word has the correct length
     if len(spieler_wort) == 5:
         index_incr = 1
     else:
-        print('Das Wort muss aus genau 5 Buchstaben bestehen')
+        print('The word must be exactly 5 letters long.')
         index_incr = 0
 
-    # Prüfen, ob das Wort nur aus Buchstaben besteht
+    # Check if the word contains only letters
     for zeichen in spieler_wort:
         if not zeichen.isalpha():
-            print('Es sind nur Buchstaben erlaubt!')
+            print('Only letters are allowed!')
             index_incr = 0
             break
 
     return index_incr
 
 def ergebnis_wordle(wordle, spieler):
-    liste_gruen = [] # beinhaltet die Indizes der korrekten Buchstaben an der korrekten Position
-    liste_gelb = [] # beinhaltet die Indizes der Buchstaben, welche vorhanden sind, aber nicht an der korrekten Position
-    
-    # Wenn zwei Mal derselbe Buchstabe geraten wird, dieser aber nur einmal vorkommt, werden trotzdem beide als "gefunden"
-    # markiert. Keine Ahnung wie die Logik im Originalspiel ist, hier ist es absichtlich so umgesetzt, da
-    # dies der Logik nicht widerspricht.  
+    liste_gruen = []  # Contains the indices of correct letters at the correct position
+    liste_gelb = []   # Contains the indices of letters that exist but are in the wrong position
 
-    # Füllt die liste_gruen ein. Sollte der Buchstabe nicht an der korrekten Stelle stehen, wird eine
-    # -1 eingetragen. Die Liste MUSS aus 5 Elementen bestehen
+    # If the same letter is guessed twice but only appears once in the word,
+    # both are still marked as "found". This is intentionally done this way.
+
+    # Fill 'liste_gruen'. If the letter is not at the correct position, insert -1.
+    # The list MUST have 5 elements.
     for i in range(5):
         if spieler[i] == wordle[i]:
             liste_gruen.append(i)
         else:
             liste_gruen.append(-1)
 
-    # Füllt die liste_gelb ein, sofern einer durch den Spieler eingegebenen Buchstabe im wordle_wort vorkommt,
-    # ansonsten wird -1 eingetragen. Die Liste MUSS aus 5 Elementen bestehen. 
-
-    # Zur besseren Übersicht ist diese Schleife von der oberen Schleife getrennt. 
+    # Fill 'liste_gelb' for letters that exist in the wordle word.
+    # Otherwise, insert -1. The list MUST have 5 elements.
     for i in range(5):
         liste_gelb.append(wordle.find(spieler[i]))
 
-    # Ausgabe für Spieler erstellen inklusive korrekter Farbcodierung
+    # Create the output for the player including correct color coding
     ausgabe = ''
 
     for i in range(5):
         if i == liste_gruen[i]:
             ausgabe += colorama.Fore.GREEN + spieler[i] + colorama.Fore.RESET
-            # print(ausgabe) # print Befehl zu Testzwecken notwendig
         elif liste_gelb[i] >= 0:
             ausgabe += colorama.Fore.YELLOW + spieler[i] + colorama.Fore.RESET
-            # print(ausgabe) # print Befehl zu Testzwecken notwendig
         else:
             ausgabe += colorama.Fore.LIGHTBLACK_EX + spieler[i] + colorama.Fore.RESET
-            # print(ausgabe) # print Befehl zu Testzwecken notwendig
 
     return ausgabe
 
-
-# Hauptprogramm
+# Main program
 worte_schreiben()
 wordle_wort = wort_wordle(worte_einlesen())
-# print(wordle_wort) # Zu Testzwecken notwenidg gewesen
 wordle_spielen(wordle_wort)
