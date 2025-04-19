@@ -20,8 +20,9 @@ Clone the repository:
 ```bash
 git clone https://github.com/Fatal196/Wordle.git
 cd Wordle
-
 ```
+Note: Ensure that the `Worte.txt` file is located in the same directory as `wordle.py`.
+
 Install required Dependencies:
 ```bash
 pip install -r requirements.txt
