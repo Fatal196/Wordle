@@ -1,6 +1,6 @@
 """
 Program Name: Wordle
-Version: 1.0
+Version: 2.0
 Author: Janick Müller
 Description: A Wordle game that can be played in the terminal
 """

@@ -13,6 +13,9 @@ After six attempts, the player must have guessed the correct word; otherwise, th
 This project is designed so that the Python file can be downloaded and executed locally.  
 Please make sure to check the `requirements.txt` before running the game.
 
+**Please note that `wordle.py` requires a list of 5-letter words, which is currently only available in German. You can add and/or remove words individually.**
+
+
 ## Installation
 
 Clone the repository:
